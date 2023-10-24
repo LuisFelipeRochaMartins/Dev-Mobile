@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'Contatos',
     initialRoute: '/',
     theme: ThemeData.dark(),
@@ -41,16 +42,27 @@ class Cadastro extends StatefulWidget {
 
 class _CadastroState extends State<Cadastro> {
   int _index = 0;
+  final formKey = GlobalKey<FormState>();
 
+  int? sexo;
+  double altura = 0 ;
+  double peso   = 0;
+  String name   = '';
+  String phoneNumber = '';
+  String? content;
+  
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cadastro'),
-      ),
-      body: Stepper(
+Widget build(BuildContext context) {
+  double pesoIdeal;
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Cadastro'),
+    ),
+    body: Form(
+      key: formKey,
+      child: Stepper(
         currentStep: _index,
-        type: StepperType.vertical,
+        type: StepperType.horizontal,
         onStepCancel: () {
           if (_index > 0) {
             setState(() {
@@ -59,10 +71,12 @@ class _CadastroState extends State<Cadastro> {
           }
         },
         onStepContinue: () {
-          if (_index <= 0) {
-            setState(() {
-              _index += 1;
-            });
+          if (_index < 1) {
+            if (formKey.currentState!.validate()) {
+              setState(() {
+                _index += 1;
+              });
+            }
           }
         },
         onStepTapped: (int index) {
@@ -72,18 +86,223 @@ class _CadastroState extends State<Cadastro> {
         },
         steps: <Step>[
           Step(
-            title: const Text('Ola '),
+            title: const Text('Credenciais'),
+            state: _index > 0 ? StepState.complete : StepState.indexed,
             content: Container(
               alignment: Alignment.centerLeft,
-              child: const Text('Testing'),
+              child: Column(
+                children: [
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor preencha este campo';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.people_rounded),
+                      hintText: "Coloque o seu nome",
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        name = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor preencha este campo';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.phone_android),
+                      border: OutlineInputBorder(),
+                      hintText: "Número de Telefone",
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        phoneNumber = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
-          const Step(
-            title: Text('Step 2 title'),
-            content: Text('Content for Step 2'),
+          Step(
+            title: const Text('Endereço'),
+            state: _index > 1 ? StepState.complete : StepState.indexed,
+            content: Container(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.add_location),
+                      hintText: "Bairro",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.streetview),
+                      hintText: "Rua",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.numbers),
+                      border: OutlineInputBorder(),
+                      hintText: "Número",
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Step(
+            title: const Text('Adicionais'),
+            state: _index > 2 ? StepState.complete : StepState.indexed,
+            content: Container(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.work),
+                      hintText: "Empresa",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor preencha este campo';
+                      }
+                      return null;
+                    },
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.line_weight),
+                      border: OutlineInputBorder(),
+                      hintText: "Peso",
+                    ),
+                    onChanged: (value) {
+                      setState(() => peso = double.parse(value));
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor preencha este campo';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.height),
+                      border: OutlineInputBorder(),
+                      hintText: "Altura",
+                    ),
+                    onChanged: (value) {
+                      setState(() => altura = double.parse(value));
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: ListTile(
+                                title: const Text('Homem'),
+                                leading: Radio<int>(
+                                  value: 0,
+                                  groupValue: sexo,
+                                  onChanged: (int? value) {
+                                    setState(() => sexo = value);
+                                  },
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: ListTile(
+                                title: const Text("Mulher"),
+                                leading: Radio<int>(
+                                  value: 1,
+                                  groupValue: sexo,
+                                  onChanged: (int? value) {
+                                    setState(() {
+                                      sexo = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
-    );
-  }
+    ),
+    floatingActionButton: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: ElevatedButton(
+        onPressed: () => {
+          if (sexo == 0) {
+            pesoIdeal = (72.7 *  altura - 58),
+          } else {
+            pesoIdeal = (62.1 * altura - 58),
+          },
+          if (formKey.currentState!.validate()) {
+            showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text('Cálculo de Peso Ideal'),
+                content: Text('Altura: $altura, Peso: $peso Sexo: $sexo\n\n Peso Ideal: $pesoIdeal'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            ),
+          }
+        },
+        child: const Text('Enviar'),
+      ),
+    ),
+  );
+}
 }
