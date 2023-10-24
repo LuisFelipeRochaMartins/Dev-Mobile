@@ -49,7 +49,10 @@ class _CadastroState extends State<Cadastro> {
   double peso   = 0;
   String name   = '';
   String phoneNumber = '';
-  String? content;
+  String empresa = '';
+  String rua    = '';
+  String bairro = '';
+  String numero = '';
   
   @override
 Widget build(BuildContext context) {
@@ -149,6 +152,7 @@ Widget build(BuildContext context) {
                       prefixIcon: Icon(Icons.add_location),
                       hintText: "Bairro",
                     ),
+                    onChanged: (value) => bairro = value,
                   ),
                   const SizedBox(
                     height: 10,
@@ -159,6 +163,7 @@ Widget build(BuildContext context) {
                       prefixIcon: Icon(Icons.streetview),
                       hintText: "Rua",
                     ),
+                    onChanged: (value) => rua = value,
                   ),
                   const SizedBox(
                     height: 10,
@@ -170,6 +175,7 @@ Widget build(BuildContext context) {
                       border: OutlineInputBorder(),
                       hintText: "Número",
                     ),
+                    onChanged: (value) => numero = value,
                   ),
                 ],
               ),
@@ -188,6 +194,7 @@ Widget build(BuildContext context) {
                       prefixIcon: Icon(Icons.work),
                       hintText: "Empresa",
                     ),
+                    onChanged: (value) => empresa = value,
                   ),
                   const SizedBox(
                     height: 10,
@@ -288,8 +295,11 @@ Widget build(BuildContext context) {
             showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
-                title: const Text('Cálculo de Peso Ideal'),
-                content: Text('Altura: $altura, Peso: $peso Sexo: $sexo\n\n Peso Ideal: $pesoIdeal'),
+                title: const Text('Informações'),
+                content: Text('Pessoais: \nAltura: $altura, Peso: $peso Sexo: $sexo\n Peso Ideal: $pesoIdeal\n\n'
+                            'Endereço: \n Bairro: $bairro, Rua: $rua, Número $numero\n\n'
+                            'Contato:\n Nome: $name, Telefone: $phoneNumber\n\n'
+                            'Empresa: \n Nome: $empresa'),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () => Navigator.pop(context, 'OK'),
