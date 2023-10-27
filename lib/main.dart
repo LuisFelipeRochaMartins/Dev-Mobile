@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 void main() {
   runApp(MaterialApp(
@@ -9,6 +12,7 @@ void main() {
     routes: {
       '/'        : (context) => const Contatos(),
       '/cadastro': (context) => const Cadastro(),
+      '/config'  : (context) => const Config(),
     },
   ));
 }
@@ -27,6 +31,11 @@ class Contatos extends StatelessWidget {
             tooltip: "Adicionar novo Contato",
             onPressed: (() => Navigator.pushNamed(context, '/cadastro')),
           ),
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: "Adicionar novo Contato",
+            onPressed: (() => Navigator.pushNamed(context, '/config')),
+          )
         ],
       ),
     );
@@ -34,11 +43,89 @@ class Contatos extends StatelessWidget {
 }
 
 class Cadastro extends StatefulWidget {
-  const Cadastro({Key? key}) : super(key: key);
+  const Cadastro({super.key});
 
   @override
   _CadastroState createState() => _CadastroState();
 }
+
+class Config extends StatefulWidget {
+  const Config({super.key});
+
+  @override
+  _ConfigState createState() => _ConfigState();
+}
+
+class _ConfigState extends State<Config> {
+  int _prefference = 0;
+  String _idioma = "Olá Mundo";  
+  
+  _addLanguagePreferences(int idioma) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setInt("idioma", idioma);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Preferências"),
+      ),
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: const Text('Português'),
+                  leading: Radio<int>(
+                    value: 0,
+                    groupValue: _prefference,
+                    onChanged: (value) {
+                      setState(() {
+                        _prefference = value!;
+                        _addLanguagePreferences(_prefference);
+                      });
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListTile(
+                  title: const Text("Inglês"),
+                  leading: Radio<int>(
+                    value: 1,
+                    groupValue: _prefference,
+                    onChanged: (value) {
+                      setState(() {
+                        _prefference = value!;
+                        _addLanguagePreferences(_prefference);
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (_prefference == 0) 
+            const Text("Olá Mundo"),
+          if (_prefference == 1) 
+            const Text("Hello World"),
+        ],
+      ),
+    );
+  }
+
+  @override 
+  void initState() {
+    super.initState();
+    _addLanguagePreferences(_prefference);
+  }
+}
+
 
 class _CadastroState extends State<Cadastro> {
   int _index = 0;
